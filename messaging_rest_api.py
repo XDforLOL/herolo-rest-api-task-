@@ -115,7 +115,7 @@ def all_msg_by_usrid(usr_id: int) -> str:
         read_option = request.form['read']
     except BadRequestKeyError as e:
         "no-option-selected"
-    if not read_option:
+    if 'false' == read_option:
         all_messages = Message.query.filter_by(sent_by=usr_id, read=request.form['read']).all()
 
     response = {}
