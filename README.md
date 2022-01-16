@@ -10,6 +10,7 @@ Parameters {
     subject=<Message_Subject>
     body=<Message_Body>
     recipient=<User_id>
+    token=has_token
 }
 
 <url>/api/read_message/
