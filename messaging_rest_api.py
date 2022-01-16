@@ -10,13 +10,13 @@ from werkzeug import security
 from datetime import datetime
 from werkzeug.exceptions import BadRequestKeyError
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
-api = Api(app)
+message_api = Flask(__name__)
+message_api.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
+api = Api(message_api)
 TOKEN = os.getenv("TOKEN")
 auth = HTTPBasicAuth()
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(message_api)
 
 
 class User(db.Model):
@@ -61,7 +61,7 @@ def verify_password(username: str, password: str) -> bool:
     return True
 
 
-@app.route('/api/send_message', methods=['POST'])
+@message_api.route('/api/send_message', methods=['POST'])
 @auth.login_required
 def send_message() -> str:
     if request.form['token'] == TOKEN:
@@ -76,7 +76,7 @@ def send_message() -> str:
         return f"<div>Sent a message to {User.query.filter_by(id=request.form['recipient']).first().username}</div>"
 
 
-@app.route('/api/read_message/', methods=['GET'])
+@message_api.route('/api/read_message/', methods=['GET'])
 @auth.login_required
 def read_message() -> str:
     user = g.user.id
@@ -96,7 +96,7 @@ def read_message() -> str:
                 )
 
 
-@app.route('/api/delete_message/<int:msg_id>', methods=['POST'])
+@message_api.route('/api/delete_message/<int:msg_id>', methods=['POST'])
 @auth.login_required
 def delete_message_byid(msg_id: int) -> str:
     message_for_deletion = Message.query.filter_by(id=msg_id).first()
@@ -106,7 +106,7 @@ def delete_message_byid(msg_id: int) -> str:
     return resp
 
 
-@app.route('/api/all_msg_by_usrid/<int:usr_id>', methods=['GET'])
+@message_api.route('/api/all_msg_by_usrid/<int:usr_id>', methods=['GET'])
 @auth.login_required
 def all_msg_by_usrid(usr_id: int) -> str:
     all_messages = Message.query.filter_by(sent_by=usr_id).all()
@@ -131,4 +131,4 @@ def all_msg_by_usrid(usr_id: int) -> str:
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    message_api.run()
