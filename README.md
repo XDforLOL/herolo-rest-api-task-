@@ -12,8 +12,12 @@ Parameters {
     recipient=<User_id>
 }
 
-<url>/api/read_message/'
+<url>/api/read_message/
+    Reads 1 meassge of logged user
 
-<url>/api/delete_message/<int:msg_id>'
+<url>/api/delete_message/<msg_id>
 
-<url>/api/all_msg_by_usrid/<int:usr_id>'
+<url>/api/all_msg_by_usrid/<usr_id>
+    optinal param {
+    read=<bool>
+    }
